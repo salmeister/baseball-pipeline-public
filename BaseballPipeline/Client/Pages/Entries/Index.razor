@@ -1,0 +1,100 @@
+@page "/manageentries"
+@using BaseballPipeline.Shared.Models
+@using BaseballPipeline.Shared.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject HttpClient Http
+@attribute [Authorize]
+@inject IJSRuntime js
+@inject QuoteService QuoteService
+
+<h1>Manage Entries</h1>
+
+@if (entries == null)
+{
+    @((MarkupString)QuoteService.GetRandomQuoteHtml())
+}
+else
+{
+<p>
+    <a class="ant-btn ant-btn-primary" style="background-color:white;border-color:#00004C" href="manageentries/add">Add</a>
+</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Post ID</th>
+                <th>Height</th>
+                <th>Author</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Date Added</th>
+                <th>Unavailable</th>
+                <th>Tags</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Virtualize Context="entry" Items="@entries">
+                <tr>
+                    <td>
+                        <a class="small-text" href="manageentries/edit/@entry.EntryId">Edit</a>
+                        <AntDesign.Button Type="link" @onclick="@(() => Delete(entry.EntryId))">Delete</AntDesign.Button>
+                    </td>
+                    <td>@entry.EntryId</td>
+                    <td>
+                        @if (entry.TweetID.Length > 20)
+                        {
+                            @string.Concat(@entry.TweetID.Substring(0, 20), "...")
+                        }
+                        else
+                        {
+                            @entry.TweetID
+                        }
+                    </td>
+                    <td>@entry.Height</td>
+                    <td>@entry.Handle</td>
+                    <td>@entry.Title</td>
+                    <td>@entry.Description</td>
+                    <td>@(FormatDate(@entry.DateAdded))</td>
+                    <td>@entry.Unavailable</td>
+                    <td>@string.Join(",", entry.Tags.Select(t => t.Value))</td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+}
+
+@code {
+    private EntryModel[] entries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            entries = await Http.GetFromJsonAsync<EntryModel[]>("Entry");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+    }
+
+    async Task Delete(int entryId)
+    {
+        var entry = entries.First(x => x.EntryId == entryId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {entry.TweetID}?"))
+        {
+            await Http.DeleteAsync($"Entry/{entryId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected string FormatDate(DateTime dateTime)
+    {
+        return dateTime.ToString("MM/dd/yyyy");
+    }
+
+}

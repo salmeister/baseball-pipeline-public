@@ -1,0 +1,55 @@
+﻿@page "/subscription"
+
+@using BaseballPipeline.Shared.Models
+
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager UriHelper
+@inject IJSRuntime js
+
+<br />
+<br />
+<br />
+<h3>Subscription</h3>
+
+<p>If you have not already subscribed for notifications, click on the Allow button to sign up.</p>
+<br />
+<br />
+<p>
+    @errMsg
+</p>
+
+@code {
+
+    private string errMsg;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RequestNotificationSubscriptionAsync();
+    }
+
+    async Task RequestNotificationSubscriptionAsync()
+    {
+        try
+        {
+            NotificationSubscriptionModel subscription = await js.InvokeAsync<NotificationSubscriptionModel>("blazorPushNotifications.requestSubscription");
+            if (subscription != null)
+            {
+                var http = HttpClientFactory.CreateClient("BaseballPipeline.AnonymousAPI");
+                await js.InvokeVoidAsync("alert", $"Subscription added!");
+                _ = http.PostAsJsonAsync("NotificationSubscription", subscription);
+                UriHelper.NavigateTo("/");
+            }
+            else
+            {
+                await js.InvokeVoidAsync("alert", $"You have already registered.");
+                UriHelper.NavigateTo("/");
+            }
+        }
+        catch
+        {
+            errMsg = "Subscribing to notification from an Apple device is not supported at this time.";
+        }
+    }
+
+}
+

@@ -1,0 +1,20 @@
+﻿@page "/manageentries/add"
+@using BaseballPipeline.Shared.Models
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+<h3>Add Entry</h3>
+<Form entryModel="@entryModel" OnValidSubmit="@CreateEntry" OnCancel="Cancel" />
+
+@code {
+    EntryModel entryModel = new EntryModel() { Tags = new List<MultipleSelectorModel>(), Height = 850 };
+    async Task CreateEntry()
+    {
+        await Http.PostAsJsonAsync("Entry", entryModel);
+        Navigation.NavigateTo("manageentries");
+    }
+    void Cancel()
+    {
+        Navigation.NavigateTo("manageentries");
+    }
+}

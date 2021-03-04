@@ -1,0 +1,59 @@
+@page "/tags"
+@using BaseballPipeline.Shared.Models
+@using BaseballPipeline.Shared.Services
+@inject HttpClient Http
+@inject IJSRuntime js
+@inject QuoteService QuoteService
+
+<h1>Manage Tags</h1>
+
+@if (tags == null)
+{
+    @((MarkupString)QuoteService.GetRandomQuoteHtml())
+}
+else
+{
+<p>
+    <a class="ant-btn ant-btn-primary" style="background-color:white;border-color:#00004C" href="tags/add">Add</a>
+</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tag in tags)
+            {
+            <tr>
+                <td>
+                    <a class="small-text" href="tags/edit/@tag.TagId">Edit</a>
+                    <AntDesign.Button Type="link" @onclick="@(() => Delete(tag.TagId))">Delete</AntDesign.Button>
+                </td>
+                <td>@tag.Value</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private TagModel[] tags;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tags = await Http.GetFromJsonAsync<TagModel[]>("Tag");
+    }
+
+    async Task Delete(int tagId)
+    {
+        var tag = tags.First(x => x.TagId == tagId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {tag.Value}?"))
+        {
+            await Http.DeleteAsync($"Tag/{tagId}");
+            await OnInitializedAsync();
+        }
+    }
+
+}

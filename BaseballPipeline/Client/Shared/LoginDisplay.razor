@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+<AuthorizeView>
+    <Authorized>
+        <table>
+            <tr>
+                <td>
+                    <a class="small-text" href="authentication/profile">@context.User.Identity.Name</a>
+                    &nbsp;&nbsp;
+                </td>
+                <td>
+                    <AntDesign.Button Type="link" @onclick="BeginSignOut">Log out</AntDesign.Button>
+                </td>
+            </tr>
+        </table>
+    </Authorized>
+    <NotAuthorized>
+        <table>
+            <tr>
+                <td>
+                    <a class="small-text" style="color:white!important" href="authentication/register">Register</a>
+                    &nbsp;&nbsp;
+                </td>
+                <td>
+                    <a class="small-text" style="color:white!important" href="authentication/login">Log in</a>
+                </td>
+            </tr>
+        </table>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+}

@@ -1,0 +1,121 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using BaseballPipeline.Shared.Models
+@using AntDesign
+
+@*@inject IWebAssemblyHostEnvironment HostEnvironment
+@inject IJSRuntime js*@
+
+<Menu Mode="MenuMode.Inline" Theme="MenuTheme.Light" Style="height:100%">
+    <MenuItem Class="text-center p-0">
+        Baseball Pipeline
+    </MenuItem>
+    <MenuItem>
+        <Icon Type="home"/>
+        <span>
+            <MenuLink href="" Match="NavLinkMatch.All">
+                Home
+            </MenuLink>
+        </span>
+    </MenuItem>
+    <MenuItem>
+        <span>
+            <Icon Type="filter" />
+            <MenuLink href="filter">
+                Filter
+            </MenuLink>
+        </span>
+    </MenuItem>
+    <MenuItem>
+        <span>
+            <Icon Type="sound" />
+            <MenuLink href="subscription">
+                Send Me Updates
+            </MenuLink>
+        </span>
+    </MenuItem>
+    <AuthorizeView Roles="Admin">
+        <MenuItem>
+            <Icon Type="bars" />
+            <span>
+                <MenuLink href="manageentries">
+                    Manage Entries
+                </MenuLink>
+            </span>
+        </MenuItem>
+        <MenuItem>
+            <span>
+                <Icon Type="tag" />
+                <MenuLink href="tags">
+                    Manage Tags
+                </MenuLink>
+            </span>
+        </MenuItem>
+        <MenuItem>
+            <span>
+                <Icon Type="dashboard" />
+                <MenuLink href="dashboard">
+                    Admin Dashboard
+                </MenuLink>
+            </span>
+        </MenuItem>
+    </AuthorizeView>
+    @*@if (!alreadyInstalled)
+        {
+            <MenuItem>
+                <span>
+                    <MenuLink href="#">
+                        Install
+                    </MenuLink>
+                </span>
+            </MenuItem>
+        }
+        <MenuItem>
+            <span>
+                <MenuLink href="info">
+                    @GetAppVersion()
+                </MenuLink>
+            </span>
+        </MenuItem>
+        <MenuItem>
+            <span>
+                <MenuLink href="settings">
+                    @HostEnvironment.Environment
+                </MenuLink>
+            </span>
+        </MenuItem>*@
+
+</Menu>
+
+    @code {
+        //private bool alreadyInstalled = true; //Hiding Install menu until can determine how to prompt the install
+        //private bool collapseNavMenu = true;
+        //private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+        //private void ToggleNavMenu()
+        //{
+        //    collapseNavMenu = !collapseNavMenu;
+        //}
+
+        //protected override async Task OnInitializedAsync()
+        //{
+
+        //    var listOfInstalledApps = await js.InvokeAsync<List<InstalledAppModel>>("window.navigator.getInstalledRelatedApps");
+        //    if (listOfInstalledApps.Count > 0)
+        //    {
+        //        alreadyInstalled = true;
+        //    }
+        //}
+
+        //private string GetAppVersion()
+        //{
+        //    try
+        //    {
+        //        return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        //    }
+        //    catch
+        //    {
+        //        return string.Empty;
+        //    }
+        //}
+
+    }

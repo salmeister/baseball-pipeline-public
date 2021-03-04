@@ -1,0 +1,27 @@
+﻿@using BaseballPipeline.Shared.Models
+
+<EditForm Model="@tag" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Name</label>
+                <InputText @bind-Value="@tag.Value" />
+                <ValidationMessage For="@(() => tag.Value)" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button class="btn btn-danger" @onclick="@OnCancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter] public TagModel tag { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

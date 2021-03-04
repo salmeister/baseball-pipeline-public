@@ -1,0 +1,33 @@
+﻿@page "/dashboard"
+
+@using BaseballPipeline.Shared.Models
+
+@inject HttpClient Http
+
+    <div style="margin-left:15px">
+        <h3>Admin Dashboard</h3>
+
+        <table>
+            <tr>
+                <td>
+                    <label>Subscription Count:</label>
+                </td>
+                <td>
+                    <label>@subsCount.ToString()</label>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    @code {
+
+        private int subsCount;
+
+        protected override async Task OnInitializedAsync()
+        {
+            NotificationSubscriptionModel[] subs = await Http.GetFromJsonAsync<NotificationSubscriptionModel[]>("NotificationSubscription");
+            subsCount = subs.Count();
+        }
+
+    }
+

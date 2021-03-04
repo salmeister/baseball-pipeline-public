@@ -1,0 +1,26 @@
+﻿@page "/tags/edit/{Id}"
+@using BaseballPipeline.Shared.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<h2>Edit Tag</h2>
+<hr />
+<Form tag="@tag" OnValidSubmit="@EditTag" OnCancel="Cancel" />
+@functions {
+    [Parameter]
+    public string id { get; set; }
+    public TagModel tag = new TagModel();
+    protected override async Task OnInitializedAsync()
+    {
+        tag = await Http.GetFromJsonAsync<TagModel>($"Tag/{Convert.ToInt32(id)}");
+    }
+    protected async Task EditTag()
+    {
+        await Http.PutAsJsonAsync("Tag", tag);
+        Navigation.NavigateTo("tags");
+    }
+    void Cancel()
+    {
+        Navigation.NavigateTo("tags");
+    }
+}

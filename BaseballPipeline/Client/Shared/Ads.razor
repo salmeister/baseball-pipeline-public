@@ -1,0 +1,30 @@
+﻿<div>
+    @AdForm
+</div>
+
+@code {
+    private RenderFragment AdForm
+    {
+        get
+        {
+            RenderFragment form = b =>
+            {
+                b.OpenElement(0, "script");
+                b.AddAttribute(0, "async", true);
+                b.AddAttribute(0, "src", "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js");
+                b.CloseElement();
+                b.OpenElement(0, "");
+                b.AddAttribute(0, "class", "adsbygoogle");
+                b.AddAttribute(1, "style", "display:inline-block;width:728px;height:90px");
+                b.AddAttribute(2, "data-ad-client", "ca-pub-8348860109430049");
+                b.AddAttribute(3, "data-ad-slot", "");
+                b.CloseElement();
+                b.OpenElement(0, "script");
+                b.AddContent(0, "(adsbygoogle = window.adsbygoogle || []).push({});");
+                b.CloseElement();
+            };
+            return form;
+        }
+    }
+
+}

@@ -1,0 +1,69 @@
+﻿@using BaseballPipeline.Shared.Models
+
+@inject HttpClient Http
+
+<EditForm Model="@entryModel" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <hr />
+    <div class="form-group">
+        <label>Post ID</label><br />
+        <InputText class="w-75" @bind-Value="@entryModel.TweetID" />
+        <ValidationMessage For="@(() => entryModel.TweetID)" />
+
+    </div>
+    <div class="form-group">
+        <label>Author</label><br />
+        <InputText class="w-75" @bind-Value="@entryModel.Handle" />
+        <ValidationMessage For="@(() => entryModel.Handle)" />
+    </div>
+    <div class="form-group">
+        <label>Title</label><br />
+        <InputText class="w-75" @bind-Value="@entryModel.Title" />
+        <ValidationMessage For="@(() => entryModel.Title)" />
+    </div>
+    <div class="form-group">
+        <label>Height</label><br />
+        <InputNumber @bind-Value="@entryModel.Height" />
+        <ValidationMessage For="@(() => entryModel.Height)" />
+    </div>
+    <div class="form-group">
+        <label>Description</label><br />
+        <InputText class="w-100" @bind-Value="@entryModel.Description" />
+        <ValidationMessage For="@(() => entryModel.Description)" />
+    </div>
+    <div class="form-group">
+        <label>Unavailable</label>
+        <InputCheckbox @bind-Value="@entryModel.Unavailable" />
+        <ValidationMessage For="@(() => entryModel.Unavailable)" />
+    </div>
+    <div class="form-group">
+        <label>Tags</label>
+        <MultipleSelector Selected="@entryModel.Tags" NotSelected="@NotSelected"></MultipleSelector>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-danger" @onclick="@OnCancel">Cancel</button>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter] public EntryModel entryModel { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private List<MultipleSelectorModel> Selected = new List<MultipleSelectorModel>();
+    private List<MultipleSelectorModel> NotSelected = new List<MultipleSelectorModel>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //if (entryModel.EntryId > 0)
+        //{
+        //    Selected = new List<TagModel>().Select(x => new MultipleSelectorModel(x.TagId.ToString(), x.Value)).ToList();
+        //}
+        NotSelected = (await Http.GetFromJsonAsync<TagModel[]>("Tag")).ToList().Select(x => new MultipleSelectorModel(x.TagId.ToString(), x.Value)).Except(entryModel.Tags).OrderBy(t => t.Value).ToList();
+    }
+
+
+}
